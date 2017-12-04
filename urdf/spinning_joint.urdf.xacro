@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+
+<robot name="turtlebot" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:property name="sensor_size" value="0.02"/>
+
+  <joint name="laser_joint" type="continuous">
+      <axis xyz="0 1 0" />
+      <origin xyz="0 0 0.3" rpy="0 0 0"/>
+      <parent link="base_link"/>
+      <child link="laser_link"/>
+      <!--limit lower="-1.0" upper="1.0" effort="100.0" velocity="10.0"/-->
+  </joint>
+
+  <link name="laser_link">
+      <collision>
+          <origin xyz="0 0 0" rpy="0 0 0"/>
+          <geometry>
+              <box size="${sensor_size} ${sensor_size} ${sensor_size}"/>
+          </geometry>
+      </collision>
+
+      <visual>
+          <origin xyz="0 0 0" rpy="0 0 0"/>
+          <geometry>
+              <box size="${sensor_size} ${sensor_size} ${sensor_size}"/>
+          </geometry>
+      </visual>
+
+      <inertial>
+          <mass value="1e-5" />
+          <origin xyz="0 0 0" rpy="0 0 0"/>
+          <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
+      </inertial>
+  </link>
+
+  <gazebo>
+      <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so"/>
+  </gazebo>
+
+  <transmission name="laser_transmission">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="laser_joint">
+          <hardwareInterface>VelocityJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="laser_motor">
+          <hardwareInterface>VelocityJointInterface</hardwareInterface>
+          <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+  </transmission>
+
+</robot>
